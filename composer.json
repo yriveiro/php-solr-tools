@@ -1,0 +1,22 @@
+{
+    "name": "yriveiro/php-solr-tools",
+    "description": "A set of tools for work with Solr.",
+    "keywords": ["php", "PHP", "Solr", "SolrCloud"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yago Riveiro",
+            "email": "yago.riveiro@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*",
+        "satooshi/php-coveralls": "dev-master"
+    },
+    "autoload": {
+        "psr-0": { "SolrTools": "src/" }
+    }
+}
