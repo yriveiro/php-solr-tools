@@ -13,7 +13,7 @@
 >
     <testsuites>
         <testsuite name="SolrTools Test Suite">
-            <directory>./tests/src/SolrTools/</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 
