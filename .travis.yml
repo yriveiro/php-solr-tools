@@ -6,6 +6,7 @@ php:
 before_script:
   - wget http://getcomposer.org/composer.phar
   - php composer.phar install --dev --no-interaction
+  - curl -s https://raw.github.com/yriveiro/travis-solr/master/travis-solr.sh | SOLR_VERSION=4.5.1 bash
 
 script:
   - mkdir -p build/logs
