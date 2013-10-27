@@ -12,7 +12,7 @@
          bootstrap="vendor/autoload.php"
 >
     <testsuites>
-        <testsuite name="FSLock Test Suite">
+        <testsuite name="SolrTools Test Suite">
             <directory>./tests/src/SolrTools/</directory>
         </testsuite>
     </testsuites>
