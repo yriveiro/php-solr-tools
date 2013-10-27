@@ -15,6 +15,8 @@ class ClusterStateTest extends PHPUnit_Framework_TestCase
 
 	public function testGetNodeUrl()
 	{
+		$nodes = array('http://localhost:8983');
+
 		$this->assertContains($this->cs->getNodeUrl(), $nodes);
 	}
 
