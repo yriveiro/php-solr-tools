@@ -31,7 +31,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 
 		foreach ($collections as $name => $data) {
 			$collection = new Collection($name, $data);
-			$this->assertRegExp("/http:\/\/.*\/$name/", $collection->getUpdateUrl());
+			$this->assertRegExp("/http:\/\/.*\/$name/", $collection->getBaseUrl());
 		}
 	}
 
