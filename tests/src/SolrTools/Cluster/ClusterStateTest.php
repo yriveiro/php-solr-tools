@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\src\SolrTools;
+namespace tests\src\SolrTools\Cluster;
 
 use Exception;
 use \SolrTools\Cluster\ClusterState;
