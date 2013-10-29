@@ -46,6 +46,15 @@ class ClusterStateTest extends PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('\SolrTools\Cluster\Collection', $collection);
 	}
 
+    /**
+     * @expectedException Exception
+     */
+	public function testGetCollectionNotExists()
+	{
+		$this->cs->init();
+		$collection = $this->cs->getCollection('collectionNotExists');
+	}
+
 	public function testGetCollections()
 	{
 		$this->cs->init();
@@ -53,4 +62,15 @@ class ClusterStateTest extends PHPUnit_Framework_TestCase
 		$this->assertContainsOnlyInstancesOf('\SolrTools\Cluster\Collection', $collections);
 	}
 
+	public function testRefresClusterState()
+	{
+		$this->cs->init();
+		$collections = $this->cs->getCollections();
+		$this->assertContainsOnlyInstancesOf('\SolrTools\Cluster\Collection', $collections);
+
+		$this->cs->refresh();
+		$collections = $this->cs->getCollections();
+		$this->assertContainsOnlyInstancesOf('\SolrTools\Cluster\Collection', $collections);
+
+	}
 }
