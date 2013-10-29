@@ -7,8 +7,6 @@ use \Exception;
 
 class Collection
 {
-	const ROUTER_COMPOSITEID = 'compositeId';
-
 	protected $name;
 	protected $baseUrls = array();
 
@@ -16,7 +14,6 @@ class Collection
 	public function __construct($name, $data)
 	{
 		$this->name = $name;
-
 		$this->parse($data);
 	}
 
