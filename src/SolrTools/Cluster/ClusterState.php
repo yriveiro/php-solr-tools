@@ -42,7 +42,7 @@ class ClusterState
 		$this->lastError = null;
 	}
 
-	public function fetchClusterState()
+	public function fetch()
 	{
 		$response = null;
 		$retries = 0;
@@ -81,15 +81,23 @@ class ClusterState
 		return json_decode($response->body);
 	}
 
-	public function readClusterState($clusterState)
+	public function read($clusterState)
 	{
 		$this->timestamp = time();
+
+		$collections = json_decode($clusterState->znode->data);
+
+		if (count((array) $collections) > 0) {
+			foreach ($collections as $name => $data) {
+				$collection = new Collection($name, $data);
+				$this->collections[$name] = $collection;
+			}
+		}
 	}
 
 	public function init()
 	{
-		$cs = $this->fetchClusterState();
-		$this->readClusterState($cs);
+		$this->read($this->fetch());
 	}
 
 	public function refresh()
@@ -99,6 +107,15 @@ class ClusterState
 
 	public function getCollection($name)
 	{
+		if (!in_array($name, array_keys($this->collections))) {
+			throw new Exception('Collection not exists in cluster, out of date?.');
+		}
 
+		return $this->collections[$name];
+	}
+
+	public function getCollections()
+	{
+		return $this->collections;
 	}
 }
