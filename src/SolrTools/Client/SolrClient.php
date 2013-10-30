@@ -3,36 +3,65 @@ namespace SolrTools\Client;
 
 
 use \Exception;
+use \SolrTools\Cluster\ClusterState;
 use \Requests;
+
 
 class SolrClient
 {
 	const DEFAULT_HTTP_RETRIES = 10;
 	const DEFAULT_HTTP_TIMEOUT = 30;
 
-	protected $nodes;
+	protected $clusterNodes;
 	protected $retries;
 	protected $timeout;
 	protected $lastError;
+	protected $clusterStateInstance;
 
 	public function __construct(
-		array $nodes,
+		array $clusterNodes,
 		$retries = self::DEFAULT_HTTP_RETRIES,
 		$timeout = self::DEFAULT_HTTP_TIMEOUT
 	)
 	{
-		$this->nodes = $nodes;
-		$this->retries = $retries;
-		$this->timeout = $timeout;
+		$this->clusterNodes = $clusterNodes;
+		$this->retries = (int) $retries;
+		$this->timeout = (int) $timeout;
 	}
 
-	public function createCollection(array $properties)
+	public function initClusterState()
+	{
+		$this->clusterStateInstance = new ClusterState(
+			$this->clusterNodes,
+			$this->retries,
+			$this->timeout
+		);
+
+		$this->clusterStateInstance->init();
+	}
+
+	public function getClusterState()
+	{
+		return $this->clusterStateInstance;
+	}
+
+	public function refreshClusterState()
+	{
+		$this->getClusterState()->refresh();
+	}
+
+	public function getCollection($name)
+	{
+		return $this->getClusterState()->getCollection($name);
+	}
+
+	public function createCollection(array $properties, $forceSync = true)
 	{
 		$response = null;
 
 		$url = sprintf(
 			"http://%s/solr/admin/collections?action=CREATE&%s&wt=json",
-			$this->nodes[array_rand($this->nodes)],
+			$this->clusterNodes[array_rand($this->clusterNodes)],
 			http_build_query($properties)
 		);
 
@@ -59,7 +88,7 @@ class SolrClient
 
 		$url = sprintf(
 			"http://%s/solr/admin/collections?action=DELETE&%s&wt=json",
-			$this->nodes[array_rand($this->nodes)],
+			$this->clusterNodes[array_rand($this->clusterNodes)],
 			http_build_query($properties)
 		);
 

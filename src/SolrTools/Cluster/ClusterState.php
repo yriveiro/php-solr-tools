@@ -13,7 +13,7 @@ class ClusterState
 	const DEFAULT_HTTP_TIMEOUT = 30;
 
 
-	protected $nodes;
+	protected $clusterNodes;
 	protected $retries;
 	protected $timeout;
 	protected $lastError;
@@ -23,18 +23,19 @@ class ClusterState
 
 
 	public function __construct(
-		array $nodes,
+		array $clusterNodes,
 		$retries = self::DEFAULT_HTTP_RETRIES,
 		$timeout = self::DEFAULT_HTTP_TIMEOUT
 	)
 	{
-		$this->nodes = $nodes;
+		$this->clusterNodes = $clusterNodes;
 		$this->retries = (int) $retries;
+		$this->timeout = (int) $timeout;
 	}
 
 	public function getNodeUrl()
 	{
-		return sprintf("http://%s", $this->nodes[array_rand($this->nodes)]);
+		return sprintf("http://%s", $this->clusterNodes[array_rand($this->clusterNodes)]);
 	}
 
 	public function resetLastError()

@@ -11,6 +11,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
 	public function setUp()
 	{
 		$this->cli = new SolrClient(array('localhost:8983'));
+		$this->cli->initClusterState();
 	}
 
 	public function testCreateCollection()
