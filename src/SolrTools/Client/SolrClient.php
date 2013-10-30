@@ -55,15 +55,9 @@ class SolrClient
 		return $this->getClusterState()->getCollection($name);
 	}
 
-	public function createCollection(array $properties, $forceSync = true)
+	public function execAPICollectionCommand($url, $forceSync = true)
 	{
 		$response = null;
-
-		$url = sprintf(
-			"http://%s/solr/admin/collections?action=CREATE&%s&wt=json",
-			$this->clusterNodes[array_rand($this->clusterNodes)],
-			http_build_query($properties)
-		);
 
 		try {
 			$response = Requests::get(
@@ -88,6 +82,18 @@ class SolrClient
 		return array(500, $this->lastError->getMessage());
 	}
 
+	public function createCollection(array $properties, $forceSync = true)
+	{
+
+		$url = sprintf(
+			"http://%s/solr/admin/collections?action=CREATE&%s&wt=json",
+			$this->clusterNodes[array_rand($this->clusterNodes)],
+			http_build_query($properties)
+		);
+
+		return $this->execAPICollectionCommand($url, $forceSync);
+	}
+
 	public function deleteCollection(array $properties, $forceSync = true)
 	{
 		$response = null;
@@ -98,26 +104,6 @@ class SolrClient
 			http_build_query($properties)
 		);
 
-		try {
-			$response = Requests::get(
-				$url,
-				array('Accept' => 'application/json'),
-				array('timeout' => $this->timeout)
-			);
-		} catch (Exception $e) {
-			$this->lastError = $e;
-		}
-
-		if (!is_null($response)) {
-			if ($response->status_code === 200) {
-				if ($forceSync) {
-					$this->refreshClusterState();
-				}
-			}
-
-			return array($response->status_code, $response->body);
-		}
-
-		return array(500, $this->lastError->getMessage());
+		return $this->execAPICollectionCommand($url, $forceSync);
 	}
 }
