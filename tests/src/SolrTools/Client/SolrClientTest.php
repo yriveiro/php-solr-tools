@@ -107,4 +107,29 @@ class ClientTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(500, $code);
 	}
+
+	public function testGetClusterState()
+	{
+		$this->cli->initClusterState();
+
+		$this->assertInstanceOf(
+			'\SolrTools\Cluster\ClusterState',
+		   	$this->cli->getClusterState()
+		);
+	}
+
+	public function testGetClusterStateNotInitialized()
+	{
+		$cli = new SolrClient(array('localhost:8983'));
+		$this->assertEmpty($cli->getClusterState());
+	}
+
+	public function testGetCollection()
+	{
+		$this->assertInstanceOf(
+			'SolrTools\Cluster\Collection',
+			$this->cli->getCollection('collection1')
+		);
+	}
+
 }
