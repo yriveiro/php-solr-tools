@@ -47,13 +47,34 @@ class SolrClient
 		}
 
 		if (!is_null($response)) {
-			$body = json_decode($response->body);
+			return array($response->status_code, $response->body);
+		}
 
-			if ($response->status_code === 200) {
-				return array($response->status_code, 'ok');
-			}
+		return array(500, $this->lastError->getMessage());
+	}
 
-			return array($response->status_code, $body->error->msg);
+	public function deleteCollection(array $properties)
+	{
+		$response = null;
+
+		$url = sprintf(
+			"http://%s/solr/admin/collections?action=DELETE&%s&wt=json",
+			$this->nodes[array_rand($this->nodes)],
+			http_build_query($properties)
+		);
+
+		try {
+			$response = Requests::get(
+				$url,
+				array('Accept' => 'application/json'),
+				array('timeout' => $this->timeout)
+			);
+		} catch (Exception $e) {
+			$this->lastError = $e;
+		}
+
+		if (!is_null($response)) {
+			return array($response->status_code, $response->body);
 		}
 
 		return array(500, $this->lastError->getMessage());

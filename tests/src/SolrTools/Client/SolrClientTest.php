@@ -23,13 +23,12 @@ class ClientTest extends PHPUnit_Framework_TestCase
 			'collection.configName' => 'default'
 		);
 
-		list($code, $msg) = $this->cli->createCollection($parameters);
+		list($code, $response) = $this->cli->createCollection($parameters);
 
 		$this->assertEquals(200, $code);
-		$this->assertEquals('ok', $msg);
 	}
 
-	public function testCreateCollectionFails()
+	public function testCreateCollectionFailure()
 	{
 		$parameters = array(
 			'name' => 'phpunit',
@@ -39,9 +38,42 @@ class ClientTest extends PHPUnit_Framework_TestCase
 			'collection.configName' => 'default'
 		);
 
-		list($code, $msg) = $this->cli->createCollection($parameters);
+		list($code, $response) = $this->cli->createCollection($parameters);
+
+		$response = json_decode($response);
 
 		$this->assertEquals(400, $code);
-		$this->assertEquals('collection already exists: phpunit', $msg);
+		$this->assertEquals(
+			'collection already exists: phpunit',
+			$response->error->msg
+		);
+	}
+
+	public function testDeleteCollection()
+	{
+		$parameters = array(
+			'name' => 'phpunit'
+		);
+
+		list($code, $response) = $this->cli->deleteCollection($parameters);
+
+		$this->assertEquals(200, $code);
+	}
+
+	public function testDeleteCollectionFailure()
+	{
+		$parameters = array(
+			'name' => 'collectionNotExists'
+		);
+
+		list($code, $response) = $this->cli->deleteCollection($parameters);
+
+		$response = json_decode($response);
+
+		$this->assertEquals(400, $code);
+		$this->assertEquals(
+			'Could not find collection:collectionNotExists',
+			$response->error->msg
+		);
 	}
 }
