@@ -76,13 +76,19 @@ class SolrClient
 		}
 
 		if (!is_null($response)) {
+			if ($response->status_code === 200) {
+				if ($forceSync) {
+					$this->refreshClusterState();
+				}
+			}
+
 			return array($response->status_code, $response->body);
 		}
 
 		return array(500, $this->lastError->getMessage());
 	}
 
-	public function deleteCollection(array $properties)
+	public function deleteCollection(array $properties, $forceSync = true)
 	{
 		$response = null;
 
@@ -103,6 +109,12 @@ class SolrClient
 		}
 
 		if (!is_null($response)) {
+			if ($response->status_code === 200) {
+				if ($forceSync) {
+					$this->refreshClusterState();
+				}
+			}
+
 			return array($response->status_code, $response->body);
 		}
 
