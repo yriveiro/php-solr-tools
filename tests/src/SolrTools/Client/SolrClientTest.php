@@ -100,10 +100,6 @@ class ClientTest extends PHPUnit_Framework_TestCase
 
 		$parameters = array(
 			'name' => 'phpunit',
-			'numShards' => 2,
-			'replicationFactor' => 1,
-			'maxShardsPerNode' => 2,
-			'collection.configName' => 'default'
 		);
 
 		list($code, $response) = $cli->deleteCollection($parameters);
