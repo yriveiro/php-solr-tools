@@ -4,6 +4,7 @@ namespace SolrTools\Client;
 
 use \Exception;
 use \SolrTools\Cluster\ClusterState;
+use \SolrTools\Collection\CollectionAPI;
 use \Requests;
 
 
@@ -55,55 +56,51 @@ class SolrClient
 		return $this->getClusterState()->getCollection($name);
 	}
 
-	public function execAPICollectionCommand($url, $forceSync = true)
-	{
-		$response = null;
-
-		try {
-			$response = Requests::get(
-				$url,
-				array('Accept' => 'application/json'),
-				array('timeout' => $this->timeout)
-			);
-		} catch (Exception $e) {
-			$this->lastError = $e;
-		}
-
-		if (!is_null($response)) {
-			if ($response->status_code === 200) {
-				if ($forceSync) {
-					$this->refreshClusterState();
-				}
-			}
-
-			return array($response->status_code, $response->body);
-		}
-
-		return array(500, $this->lastError->getMessage());
-	}
-
 	public function createCollection(array $properties, $forceSync = true)
 	{
-
-		$url = sprintf(
-			"http://%s/solr/admin/collections?action=CREATE&%s&wt=json",
-			$this->clusterNodes[array_rand($this->clusterNodes)],
-			http_build_query($properties)
+		$response = CollectionAPI::createCollection(
+			$properties,
+			$this->clusterNodes[array_rand($this->clusterNodes)]
 		);
 
-		return $this->execAPICollectionCommand($url, $forceSync);
+		if ($response[0] === 200) {
+			if ($forceSync) {
+				$this->refreshClusterState();
+			}
+		}
+
+		return $response;
 	}
 
 	public function deleteCollection(array $properties, $forceSync = true)
 	{
-		$response = null;
-
-		$url = sprintf(
-			"http://%s/solr/admin/collections?action=DELETE&%s&wt=json",
-			$this->clusterNodes[array_rand($this->clusterNodes)],
-			http_build_query($properties)
+		$response = CollectionAPI::deleteCollection(
+			$properties,
+			$this->clusterNodes[array_rand($this->clusterNodes)]
 		);
 
-		return $this->execAPICollectionCommand($url, $forceSync);
+		if ($response[0] === 200) {
+			if ($forceSync) {
+				$this->refreshClusterState();
+			}
+		}
+
+		return $response;
+	}
+
+	public function createAliasCollection(array $properties, $forceSync = true)
+	{
+		$response = CollectionAPI::createAlias(
+			$properties,
+			$this->clusterNodes[array_rand($this->clusterNodes)]
+		);
+
+		if ($response[0] === 200) {
+			if ($forceSync) {
+				$this->refreshClusterState();
+			}
+		}
+
+		return $response;
 	}
 }

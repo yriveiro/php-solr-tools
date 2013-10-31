@@ -127,7 +127,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
 	public function testGetCollection()
 	{
 		$this->assertInstanceOf(
-			'SolrTools\Cluster\Collection',
+			'\SolrTools\Collection\Collection',
 			$this->cli->getCollection('collection1')
 		);
 	}
