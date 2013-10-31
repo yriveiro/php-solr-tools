@@ -20,7 +20,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 		$collections = json_decode($data->znode->data);
 
 		foreach ($collections as $name => $data) {
-			$this->assertInstanceOf('\SolrTools\Cluster\Collection', new Collection($name, $data));
+			$this->assertInstanceOf('\SolrTools\Collection\Collection', new Collection($name, $data));
 		}
 	}
 
