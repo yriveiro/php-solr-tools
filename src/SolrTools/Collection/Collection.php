@@ -1,5 +1,5 @@
 <?php
-namespace SolrTools\Cluster;
+namespace SolrTools\Collection;
 
 
 use \Exception;

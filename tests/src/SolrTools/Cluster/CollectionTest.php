@@ -1,9 +1,9 @@
 <?php
 
-namespace tests\src\SolrTools;
+namespace tests\src\SolrTools\Collection;
 
 use Exception;
-use \SolrTools\Cluster\Collection;
+use \SolrTools\Collection\Collection;
 use \SolrTools\Cluster\ClusterState;
 use \PHPUnit_Framework_TestCase;
 
