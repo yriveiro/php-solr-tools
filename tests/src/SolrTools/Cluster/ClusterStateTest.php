@@ -43,7 +43,7 @@ class ClusterStateTest extends PHPUnit_Framework_TestCase
 	{
 		$this->cs->init();
 		$collection = $this->cs->getCollection('collection1');
-		$this->assertInstanceOf('\SolrTools\Cluster\Collection', $collection);
+		$this->assertInstanceOf('\SolrTools\Collection\Collection', $collection);
 	}
 
     /**
@@ -59,18 +59,18 @@ class ClusterStateTest extends PHPUnit_Framework_TestCase
 	{
 		$this->cs->init();
 		$collections = $this->cs->getCollections();
-		$this->assertContainsOnlyInstancesOf('\SolrTools\Cluster\Collection', $collections);
+		$this->assertContainsOnlyInstancesOf('\SolrTools\Collection\Collection', $collections);
 	}
 
 	public function testRefresClusterState()
 	{
 		$this->cs->init();
 		$collections = $this->cs->getCollections();
-		$this->assertContainsOnlyInstancesOf('\SolrTools\Cluster\Collection', $collections);
+		$this->assertContainsOnlyInstancesOf('\SolrTools\Collection\Collection', $collections);
 
 		$this->cs->refresh();
 		$collections = $this->cs->getCollections();
-		$this->assertContainsOnlyInstancesOf('\SolrTools\Cluster\Collection', $collections);
+		$this->assertContainsOnlyInstancesOf('\SolrTools\Collection\Collection', $collections);
 
 	}
 }
