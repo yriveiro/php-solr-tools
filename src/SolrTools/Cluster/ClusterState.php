@@ -3,7 +3,7 @@ namespace SolrTools\Cluster;
 
 
 use \Exception;
-use SolrTools\Cluster\Collection;
+use \SolrTools\Collection\Collection;
 use \Requests;
 
 
