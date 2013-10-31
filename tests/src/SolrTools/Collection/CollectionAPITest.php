@@ -47,10 +47,6 @@ class CollectionAPITest extends PHPUnit_Framework_TestCase
 		$response = json_decode($response);
 
 		$this->assertEquals(500, $code);
-		$this->assertEquals(
-			"cURL error 6: Could not resolve host: nohost; nodename nor servname provided, or not known",
-			$response
-		);
 	}
 
 	public function testReloadCollection()
@@ -124,9 +120,5 @@ class CollectionAPITest extends PHPUnit_Framework_TestCase
 		$response = json_decode($response);
 
 		$this->assertEquals(500, $code);
-		$this->assertEquals(
-			"cURL error 6: Could not resolve host: nohost; nodename nor servname provided, or not known",
-			$response
-		);
 	}
 }
