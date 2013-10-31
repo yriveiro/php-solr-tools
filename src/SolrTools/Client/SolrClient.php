@@ -103,4 +103,20 @@ class SolrClient
 
 		return $response;
 	}
+
+	public function deleteAliasCollection(array $properties, $forceSync = true)
+	{
+		$response = CollectionAPI::deleteAlias(
+			$properties,
+			$this->clusterNodes[array_rand($this->clusterNodes)]
+		);
+
+		if ($response[0] === 200) {
+			if ($forceSync) {
+				$this->refreshClusterState();
+			}
+		}
+
+		return $response;
+	}
 }

@@ -67,6 +67,30 @@ class ClientTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(500, $code);
 	}
 
+	public function testCreateAliasCollection()
+	{
+		$parameters = array(
+			'name' => 'alias-phpunit',
+			'collections' => 'phpunit'
+		);
+
+		list($code, $response) = $this->cli->createAliasCollection($parameters);
+
+		$this->assertEquals(200, $code);
+	}
+
+	public function testDeleteAliasCollection()
+	{
+		$parameters = array(
+			'name' => 'alias-phpunit',
+		);
+
+		list($code, $response) = $this->cli->deleteAliasCollection($parameters);
+
+		$this->assertEquals(200, $code);
+	}
+
+
 	public function testDeleteCollection()
 	{
 		$parameters = array(
