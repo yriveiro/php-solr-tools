@@ -16,4 +16,14 @@ class SolrResponseTest extends PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('\StdClass', $response->json());
 		$this->assertEquals('{"key": "value"}', $response->getRawResponse());
 	}
+
+	/**
+	 * @expectedException Exception
+	 */
+	public function testParseResponseBodyJsonError()
+	{
+		$response = new SolrResponse(200, '["key": "value"]');
+
+		$response->json();
+	}
 }
