@@ -67,6 +67,22 @@ class ClientTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(500, $code);
 	}
 
+	public function testPing()
+	{
+		$parameters = array(
+			'name' => 'phpunit',
+			'numShards' => 2,
+			'replicationFactor' => 1,
+			'maxShardsPerNode' => 2,
+			'collection.configName' => 'default'
+		);
+
+		$this->cli->createCollection($parameters);
+		list($code, $response) = $this->cli->ping('phpunit', $_ENV['node']);
+
+		$this->assertEquals(200, $code);
+	}
+
 	public function testCreateAliasCollection()
 	{
 		$parameters = array(

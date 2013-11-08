@@ -118,8 +118,10 @@ class SolrClient
 		return $response;
 	}
 
-	public function commit($collection)
+	public function ping($collection)
 	{
+		$response = CollectionAPI::ping($collection, $this->getRandomNode());
 
+		return $response;
 	}
 }
