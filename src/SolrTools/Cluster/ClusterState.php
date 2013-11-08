@@ -11,8 +11,9 @@ class ClusterState
 {
 	const DEFAULT_HTTP_RETRIES = 10;
 	const DEFAULT_HTTP_TIMEOUT = 30;
+	const ZK_CMD_TEMPLATE = "%s/solr/zookeeper?detail=true&path=/clusterstate.json";
 
-
+	protected static $headers = array('Accept' => 'application/json');
 	protected $clusterNodes;
 	protected $retries;
 	protected $timeout;
@@ -43,6 +44,16 @@ class ClusterState
 		$this->lastError = null;
 	}
 
+	public function init()
+	{
+		$this->read($this->fetch());
+	}
+
+	public function refresh()
+	{
+		$this->init();
+	}
+
 	public function fetch()
 	{
 		$response = null;
@@ -50,15 +61,12 @@ class ClusterState
 		$this->resetLastError();
 
 		while (true) {
-			$url = sprintf(
-				"%s/solr/zookeeper?detail=true&path=/clusterstate.json",
-				$this->getNodeUrl()
-			);
+			$url = sprintf(self::ZK_CMD_TEMPLATE,$this->getNodeUrl());
 
 			try {
 				$response = Requests::get(
 					$url,
-					array('Accept' => 'application/json'),
+					self::$headers,
 					array('timeout' => $this->timeout)
 				);
 			} catch (Exception $e) {
@@ -96,19 +104,22 @@ class ClusterState
 		}
 	}
 
-	public function init()
+	public function collectionExists($name)
 	{
-		$this->read($this->fetch());
+		return in_array($name, array_keys($this->collections));
 	}
 
-	public function refresh()
+	public function getCollection($name, $forceSync = false)
 	{
-		$this->init();
-	}
+		if (!$this->collectionExists($name)) {
+			if ($forceSync) {
+				$this->refreshClusterState();
 
-	public function getCollection($name)
-	{
-		if (!in_array($name, array_keys($this->collections))) {
+				if ($this->collectionExists($name)) {
+					return $this->collections[$name];
+				}
+			}
+
 			throw new Exception('Collection not exists in cluster, out of date?.');
 		}
 

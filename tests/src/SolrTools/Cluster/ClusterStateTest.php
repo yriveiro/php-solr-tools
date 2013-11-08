@@ -10,12 +10,12 @@ class ClusterStateTest extends PHPUnit_Framework_TestCase
 {
 	public function setUp()
 	{
-		$this->cs = new ClusterState(array('localhost:8983'));
+		$this->cs = new ClusterState(array($_ENV['node']));
 	}
 
 	public function testGetNodeUrl()
 	{
-		$nodes = array('http://localhost:8983');
+		$nodes = array('http://' . $_ENV['node']);
 
 		$this->assertContains($this->cs->getNodeUrl(), $nodes);
 	}
@@ -30,6 +30,12 @@ class ClusterStateTest extends PHPUnit_Framework_TestCase
 		$this->cs->read($this->cs->fetch());
 
 		$this->assertGreaterThan(0, count($this->cs->getCollections()));
+	}
+
+	public function testCollectionExists()
+	{
+		$this->cs->init();
+		$this->assertTrue($this->cs->collectionExists('collection1'));
 	}
 
 	public function testInit()
