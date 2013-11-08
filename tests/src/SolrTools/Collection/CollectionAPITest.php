@@ -119,4 +119,28 @@ class CollectionAPITest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(500, $code);
 	}
+
+	public function testPing()
+	{
+		$params = array(
+			'name' => 'phpunit',
+		);
+
+		list($code, $response) = CollectionAPI::delete($params, $_ENV['node']);
+
+		$params = array(
+			'name' => 'phpunit',
+			'numShards' => 2,
+			'replicationFactor' => 1,
+			'maxShardsPerNode' => 2,
+			'collection.configName' => 'default'
+		);
+
+		CollectionAPI::create($params, $_ENV['node']);
+
+		list($code, $response) = CollectionAPI::ping('phpunit', $_ENV['node']);
+
+		$this->assertEquals(200, $code);
+	}
+
 }
