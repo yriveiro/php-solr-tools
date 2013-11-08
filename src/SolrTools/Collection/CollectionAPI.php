@@ -16,6 +16,7 @@ class CollectionAPI implements Action
 	const CREATEALIAS = 'CREATEALIAS';
 	const DELETEALIAS = 'DELETEALIAS';
 	const CMD_TPL = 'http://%s/solr/admin/collections?action=%s&%s&wt=json';
+	const PING = 'http://%s/solr/%s/admin/ping?wt=json';
 
 
 	protected static $headers = array('Accept' => 'application/json');
@@ -52,6 +53,13 @@ class CollectionAPI implements Action
 	public static function deleteAlias(array $params, $node, $timeout = self::HTTP_TIMEOUT)
 	{
 		$cmd = sprintf(self::CMD_TPL, $node, self::DELETEALIAS, self::buildQuery($params));
+
+		return self::execute($cmd, $timeout);
+	}
+
+	public static function ping($collection, $node, $timeout = self::HTTP_TIMEOUT)
+	{
+		$cmd = sprintf(self::PING, $node, $collection);
 
 		return self::execute($cmd, $timeout);
 	}
