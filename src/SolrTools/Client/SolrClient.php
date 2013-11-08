@@ -10,8 +10,8 @@ use \Requests;
 
 class SolrClient
 {
-	const DEFAULT_HTTP_RETRIES = 10;
-	const DEFAULT_HTTP_TIMEOUT = 30;
+	const HTTP_RETRIES = 10;
+	const HTTP_TIMEOUT = 30;
 
 	protected $clusterNodes;
 	protected $retries;
@@ -21,8 +21,8 @@ class SolrClient
 
 	public function __construct(
 		array $clusterNodes,
-		$retries = self::DEFAULT_HTTP_RETRIES,
-		$timeout = self::DEFAULT_HTTP_TIMEOUT
+		$retries = self::HTTP_RETRIES,
+		$timeout = self::HTTP_TIMEOUT
 	)
 	{
 		$this->clusterNodes = $clusterNodes;
@@ -51,17 +51,24 @@ class SolrClient
 		$this->getClusterState()->refresh();
 	}
 
+	public function getClusterNodes()
+	{
+		return $this->clusterNodes;
+	}
+
+	public function getRandomNode()
+	{
+		return $this->clusterNodes[array_rand($this->clusterNodes)];
+	}
+
 	public function getCollection($name)
 	{
 		return $this->getClusterState()->getCollection($name);
 	}
 
-	public function createCollection(array $properties, $forceSync = true)
+	public function createCollection(array $params, $forceSync = true)
 	{
-		$response = CollectionAPI::createCollection(
-			$properties,
-			$this->clusterNodes[array_rand($this->clusterNodes)]
-		);
+		$response = CollectionAPI::create($params, $this->getRandomNode());
 
 		if ($response[0] === 200) {
 			if ($forceSync) {
@@ -72,12 +79,9 @@ class SolrClient
 		return $response;
 	}
 
-	public function deleteCollection(array $properties, $forceSync = true)
+	public function deleteCollection(array $params, $forceSync = true)
 	{
-		$response = CollectionAPI::deleteCollection(
-			$properties,
-			$this->clusterNodes[array_rand($this->clusterNodes)]
-		);
+		$response = CollectionAPI::delete($params, $this->getRandomNode());
 
 		if ($response[0] === 200) {
 			if ($forceSync) {
@@ -88,12 +92,9 @@ class SolrClient
 		return $response;
 	}
 
-	public function createAliasCollection(array $properties, $forceSync = true)
+	public function createAliasCollection(array $params, $forceSync = true)
 	{
-		$response = CollectionAPI::createAlias(
-			$properties,
-			$this->clusterNodes[array_rand($this->clusterNodes)]
-		);
+		$response = CollectionAPI::createAlias($params, $this->getRandomNode());
 
 		if ($response[0] === 200) {
 			if ($forceSync) {
@@ -104,12 +105,9 @@ class SolrClient
 		return $response;
 	}
 
-	public function deleteAliasCollection(array $properties, $forceSync = true)
+	public function deleteAliasCollection(array $params, $forceSync = true)
 	{
-		$response = CollectionAPI::deleteAlias(
-			$properties,
-			$this->clusterNodes[array_rand($this->clusterNodes)]
-		);
+		$response = CollectionAPI::deleteAlias($params, $this->getRandomNode());
 
 		if ($response[0] === 200) {
 			if ($forceSync) {
@@ -118,5 +116,10 @@ class SolrClient
 		}
 
 		return $response;
+	}
+
+	public function commit($collection)
+	{
+
 	}
 }
