@@ -53,7 +53,9 @@ class CollectionAPITest extends PHPUnit_Framework_TestCase
 			'collection.configName' => 'default'
 		);
 
-		list($code, $response) = CollectionAPI::create($params,	$_ENV['node']);
+		CollectionAPI::create($params, $_ENV['node']);
+
+		list($code, $response) = CollectionAPI::create($params, $_ENV['node']);
 
 		$response = json_decode($response);
 
