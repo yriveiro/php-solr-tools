@@ -9,9 +9,9 @@ use \PHPUnit_Framework_TestCase;
 
 class CollectionAPITest extends PHPUnit_Framework_TestCase
 {
-	public function testCreateCollection()
+	public function testCreate()
 	{
-		$properties = array(
+		$params = array(
 			'name' => 'phpunit',
 			'numShards' => 2,
 			'replicationFactor' => 1,
@@ -19,19 +19,16 @@ class CollectionAPITest extends PHPUnit_Framework_TestCase
 			'collection.configName' => 'default'
 		);
 
-		list($code, $response) = CollectionAPI::createCollection(
-			$properties,
-			'localhost:8983'
-		);
+		list($code, $response) = CollectionAPI::create($params,	$_ENV['node']);
 
 		$response = json_decode($response);
 
 		$this->assertEquals(200, $code);
 	}
 
-	public function testCreateCollectionFailed()
+	public function testCreateFailedNotValidHosts()
 	{
-		$properties = array(
+		$params = array(
 			'name' => 'phpunit',
 			'numShards' => 2,
 			'replicationFactor' => 1,
@@ -39,83 +36,82 @@ class CollectionAPITest extends PHPUnit_Framework_TestCase
 			'collection.configName' => 'default'
 		);
 
-		list($code, $response) = CollectionAPI::createCollection(
-			$properties,
-			'noHost:8983'
-		);
+		list($code, $response) = CollectionAPI::create($params,	'noHost:8983');
 
 		$response = json_decode($response);
 
 		$this->assertEquals(500, $code);
 	}
 
-	public function testReloadCollection()
+	public function testCreateFailedCollecitonExists()
 	{
-		$properties = array(
+		$params = array(
+			'name' => 'phpunit',
+			'numShards' => 2,
+			'replicationFactor' => 1,
+			'maxShardsPerNode' => 2,
+			'collection.configName' => 'default'
+		);
+
+		list($code, $response) = CollectionAPI::create($params,	$_ENV['node']);
+
+		$response = json_decode($response);
+
+		$this->assertEquals(400, $code);
+	}
+
+	public function testReload()
+	{
+		$params = array(
 			'name' => 'phpunit',
 		);
 
-		list($code, $response) = CollectionAPI::reloadCollection(
-			$properties,
-			'localhost:8983'
-		);
+		list($code, $response) = CollectionAPI::reload($params,	$_ENV['node']);
 
 		$this->assertEquals(200, $code);
 	}
 
 	public function testCreateAlias()
 	{
-		$properties = array(
+		$params = array(
 			'name' => 'alias-phpunit',
 			'collections' => 'phpunit'
 		);
 
-		list($code, $response) = CollectionAPI::createAlias(
-			$properties,
-			'localhost:8983'
-		);
+		list($code, $response) = CollectionAPI::createAlias($params, $_ENV['node']);
 
 		$this->assertEquals(200, $code);
 	}
 
 	public function testDeleteAlias()
 	{
-		$properties = array(
+		$params = array(
 			'name' => 'alias-phpunit',
 		);
 
-		list($code, $response) = CollectionAPI::deleteAlias(
-			$properties,
-			'localhost:8983'
-		);
+		list($code, $response) = CollectionAPI::deleteAlias($params, $_ENV['node']);
 
 		$this->assertEquals(200, $code);
 	}
 
-	public function testDeleteCollection()
+	public function testDelete()
 	{
-		$properties = array(
+		$params = array(
 			'name' => 'phpunit',
 		);
 
-		list($code, $response) = CollectionAPI::deleteCollection(
-			$properties,
-			'localhost:8983'
-		);
+		list($code, $response) = CollectionAPI::delete($params, $_ENV['node']);
 
 		$this->assertEquals(200, $code);
 	}
 
-	public function testDeleteCollectionFailed()
+	public function testDeleteFailed()
 	{
-		$properties = array(
+		$params = array(
 			'name' => 'phpunit',
 		);
 
-		list($code, $response) = CollectionAPI::deleteCollection(
-			$properties,
-			'noHost:8983'
-		);
+		list($code, $response) = CollectionAPI::delete($params,	'noHost:8983');
 
 		$response = json_decode($response);
 
