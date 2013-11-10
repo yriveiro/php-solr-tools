@@ -22,23 +22,23 @@ class CollectionAPI implements Action
 	protected static $headers = array('Accept' => 'application/json');
 
 
-	public static function create(array $params, $node,	$timeout = self::HTTP_TIMEOUT)
+	public static function create(array $params, $node, $timeout = self::HTTP_TIMEOUT)
 	{
-		$cmd = sprintf(self::CMD_TPL, $node, self::CREATE,	self::buildQuery($params));
+		$cmd = sprintf(self::CMD_TPL, $node, self::CREATE, self::buildQuery($params));
 
 		return self::execute($cmd, $timeout);
 	}
 
-	public static function delete(array $params, $node,	$timeout = self::HTTP_TIMEOUT)
+	public static function delete(array $params, $node, $timeout = self::HTTP_TIMEOUT)
 	{
-		$cmd = sprintf(self::CMD_TPL, $node, self::DELETE,	self::buildQuery($params));
+		$cmd = sprintf(self::CMD_TPL, $node, self::DELETE, self::buildQuery($params));
 
 		return self::execute($cmd, $timeout);
 	}
 
-	public static function reload(array $params, $node,	$timeout = self::HTTP_TIMEOUT)
+	public static function reload(array $params, $node, $timeout = self::HTTP_TIMEOUT)
 	{
-		$cmd = sprintf(self::CMD_TPL, $node, self::RELOAD,	self::buildQuery($params));
+		$cmd = sprintf(self::CMD_TPL, $node, self::RELOAD, self::buildQuery($params));
 
 		return self::execute($cmd, $timeout);
 	}
@@ -74,7 +74,7 @@ class CollectionAPI implements Action
 		$response = null;
 
 		try {
-			$response = Requests::get($cmd,	self::$headers,	array('timeout' => $timeout));
+			$response = Requests::get($cmd, self::$headers, array('timeout' => $timeout));
 		} catch (Exception $e) {
 			// pass
 		}
