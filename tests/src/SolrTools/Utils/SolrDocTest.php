@@ -23,6 +23,14 @@ class SolrDocTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue(empty($doc->id));
 	}
 
+	public function testCreateDocWithAutoIDAndPrefix()
+	{
+		$doc = new SolrDoc(true, 'shardID!');
+
+		$this->assertInstanceOf('\SolrTools\Utils\SolrDoc', $doc);
+		$this->assertStringMatchesFormat('%a!%a', $doc->id);
+	}
+
 	/**
 	 * @expectedException Exception
 	 */
