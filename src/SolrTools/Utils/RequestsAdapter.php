@@ -84,19 +84,11 @@ class RequestsAdapter implements Adapter
 			}
 
 			if ($counter >= $retries) {
-				$code = 500;
-
-				if (is_null($error)) {
-					$error = sprintf(
-						"[%d] - %s",
-						$response->status_code,
-						$response->body
-					);
-
-					$code = $response->status_code;
+				if (!is_null($error)) {
+					throw new Exception("Max retries exceeded: " . $error, 500);
 				}
 
-				throw new Exception("Max retries exceeded: " . $error, $code);
+				break;
 			}
 
 			$counter++;
