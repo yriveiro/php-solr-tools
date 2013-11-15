@@ -4,7 +4,7 @@ namespace SolrTools\Collection;
 
 use \Exception;
 use \SolrTools\API\Action;
-use \Requests;
+use \SolrTools\Utils\RequestsAdapter;
 
 
 class CollectionAPI implements Action
@@ -17,9 +17,6 @@ class CollectionAPI implements Action
 	const DELETEALIAS = 'DELETEALIAS';
 	const CMD_TPL = 'http://%s/solr/admin/collections?action=%s&%s&wt=json';
 	const PING = 'http://%s/solr/%s/admin/ping?wt=json';
-
-
-	protected static $headers = array('Accept' => 'application/json');
 
 
 	public static function create(array $params, $node, $timeout = self::HTTP_TIMEOUT)
@@ -71,18 +68,6 @@ class CollectionAPI implements Action
 
 	private static function execute($cmd, $timeout)
 	{
-		$response = null;
-
-		try {
-			$response = Requests::get($cmd, self::$headers, array('timeout' => $timeout));
-		} catch (Exception $e) {
-			// pass
-		}
-
-		if (!is_null($response)) {
-			return array($response->status_code, $response->body);
-		}
-
-		return array(500, json_encode($e->getMessage()));
+		return RequestsAdapter::get($cmd);
 	}
 }
