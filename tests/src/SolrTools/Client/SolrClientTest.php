@@ -10,8 +10,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
 {
 	public function setUp()
 	{
-		$this->cli = new SolrClient(array($_ENV['node']));
-		$this->cli->initClusterState();
+		$this->cli = new SolrClient($_ENV['node']);
 	}
 
 	public function testCreateCollection()
@@ -26,7 +25,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
 
 		list($code, $response) = $this->cli->createCollection($parameters);
 
-		$this->assertEquals(200, $code);
+		$this->assertEquals(200, $code, $response);
 	}
 
 	public function testCreateCollectionFailure()
@@ -52,7 +51,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
 
 	public function testCreateCollectionFailureNodeDown()
 	{
-		$cli = new SolrClient(array('unknown:8983'));
+		$cli = new SolrClient('unknown:8983');
 
 		$parameters = array(
 			'name' => 'phpunit',
@@ -64,7 +63,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
 
 		list($code, $response) = $cli->createCollection($parameters);
 
-		$this->assertEquals(500, $code);
+		$this->assertEquals(500, $code, $response);
 	}
 
 	public function testPing()
@@ -80,7 +79,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
 		$this->cli->createCollection($parameters);
 		list($code, $response) = $this->cli->ping('phpunit', $_ENV['node']);
 
-		$this->assertEquals(200, $code);
+		$this->assertEquals(200, $code, $response);
 	}
 
 	public function testCreateAliasCollection()
@@ -92,7 +91,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
 
 		list($code, $response) = $this->cli->createAliasCollection($parameters);
 
-		$this->assertEquals(200, $code);
+		$this->assertEquals(200, $code, $response);
 	}
 
 	public function testDeleteAliasCollection()
@@ -103,7 +102,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
 
 		list($code, $response) = $this->cli->deleteAliasCollection($parameters);
 
-		$this->assertEquals(200, $code);
+		$this->assertEquals(200, $code, $response);
 	}
 
 
@@ -115,7 +114,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
 
 		list($code, $response) = $this->cli->deleteCollection($parameters);
 
-		$this->assertEquals(200, $code);
+		$this->assertEquals(200, $code, $response);
 	}
 
 	public function testDeleteCollectionFailure()
@@ -145,31 +144,6 @@ class ClientTest extends PHPUnit_Framework_TestCase
 
 		list($code, $response) = $cli->deleteCollection($parameters);
 
-		$this->assertEquals(500, $code);
+		$this->assertEquals(500, $code, $response);
 	}
-
-	public function testGetClusterState()
-	{
-		$this->cli->initClusterState();
-
-		$this->assertInstanceOf(
-			'\SolrTools\Cluster\ClusterState',
-		   	$this->cli->getClusterState()
-		);
-	}
-
-	public function testGetClusterStateNotInitialized()
-	{
-		$cli = new SolrClient(array('localhost:8983'));
-		$this->assertEmpty($cli->getClusterState());
-	}
-
-	public function testGetCollection()
-	{
-		$this->assertInstanceOf(
-			'\SolrTools\Collection\Collection',
-			$this->cli->getCollection('collection1')
-		);
-	}
-
 }

@@ -3,125 +3,62 @@ namespace SolrTools\Client;
 
 
 use \Exception;
-use \SolrTools\Cluster\ClusterState;
 use \SolrTools\Collection\CollectionAPI;
-use \Requests;
 
 
 class SolrClient
 {
-	const HTTP_RETRIES = 10;
-	const HTTP_TIMEOUT = 30;
+	const RETRIES = 10;
+	const TIMEOUT = 30;
 
-	protected $clusterNodes;
+	protected $node;
 	protected $retries;
 	protected $timeout;
-	protected $lastError;
-	protected $clusterStateInstance;
 
-	public function __construct(
-		array $clusterNodes,
-		$retries = self::HTTP_RETRIES,
-		$timeout = self::HTTP_TIMEOUT
-	)
+	public function __construct($node,	$retries = self::RETRIES, $timeout = self::TIMEOUT)
 	{
-		$this->clusterNodes = $clusterNodes;
+		$this->node = $node;
 		$this->retries = (int) $retries;
 		$this->timeout = (int) $timeout;
 	}
 
-	public function initClusterState()
+	public function createCollection(array $params)
 	{
-		$this->clusterStateInstance = new ClusterState(
-			$this->clusterNodes,
-			$this->retries,
-			$this->timeout
-		);
-
-		$this->clusterStateInstance->init();
+		return CollectionAPI::create($params, $this->node, $this->timeout);
 	}
 
-	public function getClusterState()
+	public function deleteCollection(array $params)
 	{
-		return $this->clusterStateInstance;
+		return CollectionAPI::delete($params, $this->node, $this->timeout);
 	}
 
-	public function refreshClusterState()
+	public function reloadCollection(array $params)
 	{
-		$this->getClusterState()->refresh();
+		return CollectionAPI::reload($params, $this->node, $this->timeout);
 	}
 
-	public function getClusterNodes()
+	public function createAliasCollection(array $params)
 	{
-		return $this->clusterNodes;
+		return CollectionAPI::createAlias($params, $this->node, $this->timeout);
 	}
 
-	public function getRandomNode()
+	public function deleteAliasCollection(array $params)
 	{
-		return $this->clusterNodes[array_rand($this->clusterNodes)];
-	}
-
-	public function getCollection($name)
-	{
-		return $this->getClusterState()->getCollection($name);
-	}
-
-	public function createCollection(array $params, $forceSync = true)
-	{
-		$response = CollectionAPI::create($params, $this->getRandomNode());
-
-		if ($response[0] === 200) {
-			if ($forceSync) {
-				$this->refreshClusterState();
-			}
-		}
-
-		return $response;
-	}
-
-	public function deleteCollection(array $params, $forceSync = true)
-	{
-		$response = CollectionAPI::delete($params, $this->getRandomNode());
-
-		if ($response[0] === 200) {
-			if ($forceSync) {
-				$this->refreshClusterState();
-			}
-		}
-
-		return $response;
-	}
-
-	public function createAliasCollection(array $params, $forceSync = true)
-	{
-		$response = CollectionAPI::createAlias($params, $this->getRandomNode());
-
-		if ($response[0] === 200) {
-			if ($forceSync) {
-				$this->refreshClusterState();
-			}
-		}
-
-		return $response;
-	}
-
-	public function deleteAliasCollection(array $params, $forceSync = true)
-	{
-		$response = CollectionAPI::deleteAlias($params, $this->getRandomNode());
-
-		if ($response[0] === 200) {
-			if ($forceSync) {
-				$this->refreshClusterState();
-			}
-		}
-
-		return $response;
+		return CollectionAPI::deleteAlias($params, $this->node, $this->timeout);
 	}
 
 	public function ping($collection)
 	{
-		$response = CollectionAPI::ping($collection, $this->getRandomNode());
-
-		return $response;
+		return CollectionAPI::ping($collection, $this->node, $this->timeout);
 	}
+
+	public function add(SolrDoc $doc, $collection) {
+		//pass
+	}
+
+	public function delete() {}
+
+	public function deleteByQuery() {}
+
+	public function search() {}
 }
