@@ -20,7 +20,14 @@
     <php>
         <env name="node" value="localhost:8983"/>
     </php>
+
     <logging>
         <log type="coverage-clover" target="build/logs/clover.xml"/>
     </logging>
+
+    <filter>
+      <blacklist>
+          <directory suffix=".php">src/SolrTools/API/</directory>
+      </blacklist>
+  </filter>
 </phpunit>
