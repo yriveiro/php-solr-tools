@@ -38,9 +38,9 @@ class RequestsdapterTest extends PHPUnit_Framework_TestCase
 		$options = RequestsAdapter::getDefaultOptions();
 
 		$options['retries'] = 5;
-		$options['timeout'] = 1;
+		$options['options']['timeout'] = 1;
 
-		list($code, $response) = RequestsAdapter::get('http://httpbin.org/delay/2');
+		list($code, $response) = RequestsAdapter::get('http://httpbin.org/delay/5', $options);
 
 		$this->assertEquals(500, $code);
 	}
