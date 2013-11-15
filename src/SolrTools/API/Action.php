@@ -1,7 +1,9 @@
 <?php
 namespace SolrTools\API;
 
-
+/**
+ * @codeCoverageIgnore
+ */
 interface Action
 {
 	public static function create(array $params, $node, $timeout = null);
